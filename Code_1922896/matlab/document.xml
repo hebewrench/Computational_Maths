@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:pPr><w:pStyle w:val="code"/></w:pPr><w:r><w:t><![CDATA[classdef code_1922896 < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        UIFigure                    matlab.ui.Figure
+        GridLayout                  matlab.ui.container.GridLayout
+        LeftPanel                   matlab.ui.container.Panel
+        UIAxes                      matlab.ui.control.UIAxes
+        RightPanel                  matlab.ui.container.Panel
+        NumberoftestsLabel          matlab.ui.control.Label
+        Numberoftests               matlab.ui.control.NumericEditField
+        RunButton                   matlab.ui.control.Button
+        estimateLabel               matlab.ui.control.Label
+        TaskDropDownLabel           matlab.ui.control.Label
+        TaskDropDown                matlab.ui.control.DropDown
+        NeedleColourDropDownLabel   matlab.ui.control.Label
+        NeedleLengthLabel           matlab.ui.control.Label
+        NeedleLengthSpinner         matlab.ui.control.Spinner
+        NeedleColourDropDown        matlab.ui.control.DropDown
+        IntersectionColourDropDownLabel  matlab.ui.control.Label
+        IntersectionColourDropDown  matlab.ui.control.DropDown
+        ShapeDropDownLabel          matlab.ui.control.Label
+        ShapeDropDown               matlab.ui.control.DropDown
+        NumberofPlanksLabel         matlab.ui.control.Label
+        numPlanks                   matlab.ui.control.Spinner
+        xLabel                      matlab.ui.control.Label
+        InfoHelpButton              matlab.ui.control.StateButton
+        Task5OptionDropDownLabel    matlab.ui.control.Label
+        Task5OptionDropDown         matlab.ui.control.DropDown
+        NeedleLengthSpinner_2       matlab.ui.control.Spinner
+        NeedleLengthSpinner_3       matlab.ui.control.Spinner
+        TextArea                    matlab.ui.control.TextArea
+        numPlanks_2                 matlab.ui.control.Spinner
+        EditDisplayMenu             matlab.ui.container.Menu
+        FontSizeMenu                matlab.ui.container.Menu
+        reduce                      matlab.ui.container.Menu
+        increase                    matlab.ui.container.Menu
+        FontColourMenu              matlab.ui.container.Menu
+        redMenu                     matlab.ui.container.Menu
+        blueMenu                    matlab.ui.container.Menu
+        greenMenu                   matlab.ui.container.Menu
+        yellowMenu                  matlab.ui.container.Menu
+        maroonMenu                  matlab.ui.container.Menu
+        blackMenu                   matlab.ui.container.Menu
+        cyanMenu                    matlab.ui.container.Menu
+        SaveExperimentMenu          matlab.ui.container.Menu
+    end
+
+    % Properties that correspond to apps with auto-reflow
+    properties (Access = private)
+        onePanelWidth = 576;
+    end
+
+   methods (Access = private)
+       function pickHit(app)
+           f = figure;
+           ax = app.UIAxes;
+           p = patch(rand(1,3),rand(1,3),'g');
+           l = line([1 0],[0 1]);
+           set(f,'ButtonDownFcn',@(~,~)disp('figure'),'HitTest','off');
+           set(ax,'ButtonDownFcn',@(~,~)disp('axes'), 'HitTest','off');
+           set(p,'ButtonDownFcn',@(~,~)disp('patch'),'PickableParts','all','FaceColor','none');
+           set(l,'ButtonDownFcn',@(~,~)disp('line'),'HitTest','off');
+            end
+   end
+
+    % Callbacks that handle component events
+    methods (Access = private)
+
+        % Value changed function: Numberoftests
+        function tests(app, event)
+            
+        end
+
+        % Button down function: UIAxes
+        function buffonax(app, event)
+            
+        end
+
+        % Button pushed function: RunButton
+        function run(app, event)
+            hold(app.UIAxes, 'on');
+            cla(app.UIAxes)
+            crossed=0;
+            numTests = app.Numberoftests.Value;
+            colour = app.NeedleColourDropDown.Value;
+            intersectingColour = app.IntersectionColourDropDown.Value;
+            if colour == "red"
+                col = "r";    
+            elseif colour == "blue"
+                col = "b";
+            elseif colour == "green"
+                col = "g";
+            elseif colour == "yellow"
+                col = "y";
+            end
+            if intersectingColour == "cyan"
+                crossCol = "c"; 
+            elseif intersectingColour == "maroon"
+                crossCol = "m";
+            elseif intersectingColour == "black"
+                crossCol = "k";
+            end
+            if app.TaskDropDown.Value ~= "Task 5" 
+                % L = width of the square/needle 
+                L = app.NeedleLengthSpinner.Value; 
+                % D = width of each plank of wood 
+                D = 2*L; 
+                k = app.numPlanks.Value;
+                for n = 0:D:(D*k)
+                    xline(app.UIAxes, n); %creates the planks
+                end
+                angs = rand(numTests,1) * (2*pi); %generates an array of random angles
+                if app.TaskDropDown.Value ~= "Task 3" || app.TaskDropDown.Value ~= "Task 3"
+                    point = D*k * rand(numTests,2) ; %generates an array of random points within the boundary
+                end
+            end
+            if app.TaskDropDown.Value == "Task 1" || app.TaskDropDown.Value == "Task 2" 
+                for i = 1:1:numTests   
+                    x1 = point(i,1);
+                    y1 = point(i,2);
+                    x2 = x1 + L*cos(angs(i));
+                    y2 = y1 + L*sin(angs(i));
+                    x3 = x2 - L*sin(angs(i));
+                    y3 = y2 + L*cos(angs(i));
+                    x4 = x3 - L*cos(angs(i));
+                    y4 = y3 - L*sin(angs(i));
+                    xsort = [x1, x2, x3, x4];
+                    sorted = sort(xsort);
+                    sorted(2)=[];
+                    sorted(2)=[];
+                    
+                    if i <=750
+                        for n = 0:D:(D*k)
+                            if ~isempty(sorted)
+                                if sorted(1) <= n && n <= sorted(2)
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                    plot(app.UIAxes, [x2,x3], [y2,y3], crossCol);
+                                    plot(app.UIAxes, [x3,x4], [y3,y4], crossCol);
+                                    plot(app.UIAxes, [x4,x1], [y4,y1], crossCol);  
+                                    crossed = crossed + 1;
+                                    sorted=[];
+                                else
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], col);
+                                    plot(app.UIAxes, [x2,x3], [y2,y3], col);
+                                    plot(app.UIAxes, [x3,x4], [y3,y4], col);
+                                    plot(app.UIAxes, [x4,x1], [y4,y1], col);  
+                                end
+                            end
+                        end
+                    else
+                        for n = 0:D:(D*k)
+                            if ~isempty(sorted)
+                                if sorted(1) <= n && n <= sorted(2)
+                                    crossed = crossed + 1;
+                                    sorted=[];
+                                end
+                            end
+                        end
+                    end
+                    
+                end 
+                piEstimate = 2 * numTests / crossed;
+            end
+            if app.TaskDropDown.Value == "Task 1"
+                app.estimateLabel.Text = "pi estimate: " + (piEstimate); 
+            elseif app.TaskDropDown.Value == "Task 2"
+                rootEstimate = 2*cos(piEstimate/4);
+                app.estimateLabel.Text = "sqrt 2 estimate: " + rootEstimate;
+            elseif app.TaskDropDown.Value == "Task 3"
+                crossed = 0;
+                t = app.numPlanks_2.Value;
+                xpoint = k * D * rand(numTests,1) ;
+                ypoint = D * t * rand(numTests,1) ;
+                for n = 0:D:(D*t) %creates the horizontal lines with spacing D
+                    yline(app.UIAxes, n);
+                end
+                q = max(k,t);
+                for i = 1:1:numTests 
+                    x1 = xpoint(i);
+                    y1 = ypoint(i);
+                    x2 = x1 + L*cos(angs(i));
+                    y2 = y1 + L*sin(angs(i));
+                    sortedx = sort([x1,x2]);
+                    sortedy = sort([y1,y2]);
+                    for n = 0:D:(D*q)
+                        if i <=1000 %only plots the first 1000 needles
+                            if ~isempty(sortedx) && ~isempty(sortedy)
+                                if (sortedx(1) <= n && n <= sortedx(2)) && (sortedy(1) <= n && n <= sortedy(2))
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                    sortedx=[];
+                                    sortedy=[];
+                                    crossed = crossed + 1;
+                                elseif sortedx(1) <= n && n <= sortedx(2)
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                    sortedx=[];
+                                    crossed = crossed + 1;
+                                elseif sortedy(1) <= n && n <= sortedy(2)
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                    sortedy=[];
+                                    crossed = crossed + 1;
+                                elseif (sortedx(1) <= n && sortedx(2) <= n) && (sortedy(1) <=n && sortedy(2) <= n )
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], col);
+                                end
+                            end
+                        end
+                        if ~isempty(sortedx) && ~isempty(sortedy)
+                            if (sortedx(1) <= n && n <= sortedx(2)) && (sortedy(1) <= n && n <= sortedy(2))
+                                sortedx=[];
+                                sortedy=[];
+                                crossed = crossed + 1;
+                            elseif sortedx(1) <= n && n <= sortedx(2)
+                                sortedx=[];
+                                crossed = crossed + 1;
+                            elseif sortedy(1) <= n && n <= sortedy(2)
+                                sortedy=[];
+                                crossed = crossed + 1;
+                            end
+                        
+                        end   
+                        
+                    end
+                end
+                P = (crossed)/numTests;
+                piEstimate = (4*L*D - (L*L)) / (P*(D*D));
+                app.estimateLabel.Text = "pi estimate: " + (piEstimate); 
+            elseif app.TaskDropDown.Value == "Task 4"
+                crossed = 0;
+                t = app.numPlanks_2.Value;
+                point = D* k * rand(numTests,2) ;
+                for n = 0:D:(D*t) %creates the horizontal lines with spacing D
+                    yline(app.UIAxes, n);
+                end
+                q = max(k,t);
+                for i = 1:1:numTests 
+                    x1 = point(i,1);
+                    y1 = point(i,2);
+                    x2 = x1 + L*cos(angs(i));
+                    y2 = y1 + L*sin(angs(i));
+                    sortedx = sort([x1,x2]);
+                    sortedy = sort([y1,y2]);
+                    for n = 0:D:(D*q)
+                        if i <=1000
+                            if ~isempty(sortedx) && ~isempty(sortedy)
+                                if (sortedx(1) <= n && n <= sortedx(2)) && (sortedy(1) <= n && n <= sortedy(2))
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol,'ButtonDownFcn',@lineCallback);
+                                    sortedx=[];
+                                    sortedy=[];
+                                    crossed = crossed + 1;
+                                elseif sortedx(1) <= n && n <= sortedx(2)
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol,'ButtonDownFcn',@lineCallback);
+                                    sortedx=[];
+                                    crossed = crossed + 1;
+                                elseif sortedy(1) <= n && n <= sortedy(2)
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], crossCol,'ButtonDownFcn',@lineCallback);
+                                    sortedy=[];
+                                    crossed = crossed + 1;
+                                elseif (sortedx(1) <= n && sortedx(2) <= n) && (sortedy(1) <=n && sortedy(2) <= n )
+                                    plot(app.UIAxes, [x1,x2], [y1,y2], col,'ButtonDownFcn',@lineCallback);
+                                end
+                            end
+                        end
+                        if ~isempty(sortedx) && ~isempty(sortedy)
+                            if (sortedx(1) <= n && n <= sortedx(2)) && (sortedy(1) <= n && n <= sortedy(2))
+                                sortedx=[];
+                                sortedy=[];
+                                crossed = crossed + 1;
+                            elseif sortedx(1) <= n && n <= sortedx(2)
+                                sortedx=[];
+                                crossed = crossed + 1;
+                            elseif sortedy(1) <= n && n <= sortedy(2)
+                                sortedy=[];
+                                crossed = crossed + 1;
+                            end
+                        
+                        end   
+                        
+                    end
+                end
+                P = (crossed)/numTests;
+                piEstimate = (4*L*D - (L*L)) / (P*(D*D));
+                app.estimateLabel.Text = "pi estimate: " + (piEstimate); 
+            elseif app.TaskDropDown.Value == "Task 5"
+                app.Task5OptionDropDown.Visible = true;
+                if app.Task5OptionDropDown.Value == "Shapes"
+                    L = app.NeedleLengthSpinner.Value; 
+                    % D = width of each plank of wood 
+                    D = 2*L; 
+                    k = app.numPlanks.Value;
+                    for n = 0:D:(D*k)
+                        xline(app.UIAxes, n); %creates the planks
+                    end
+                    angs = rand(numTests,1) * (2*pi); %generates an array of random angles
+                    point = D*k * rand(numTests,2) ; %generates an array of random points 
+                    if app.ShapeDropDown.Value == "Triangle"  
+                        for i = 1:1:numTests   
+                            x1 = point(i,1);
+                            y1 = point(i,2);
+                            x2 = x1 + L*cos(angs(i));
+                            y2 = y1 + L*sin(angs(i));
+                            x3 = x2 - L*sin(angs(i));
+                            y3 = y2 + L*cos(angs(i));  
+                            xsort = [x1, x2, x3];
+                            sorted = sort(xsort);
+                            sorted(2)=[];
+                            if i <=750
+                                for n = 0:D:(D*k)
+                                    if ~isempty(sorted)
+                                        if sorted(1) <= n && n <= sorted(2)
+                                            crossed = crossed + 1;
+                                            sorted(1)=[];
+                                            sorted(1)=[];
+                                            plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                            plot(app.UIAxes, [x2,x3], [y2,y3], crossCol);
+                                            plot(app.UIAxes, [x3,x1], [y3,y1], crossCol); 
+                                        
+                                        else
+                                            plot(app.UIAxes, [x1,x2], [y1,y2], col);
+                                            plot(app.UIAxes, [x2,x3], [y2,y3], col);
+                                            plot(app.UIAxes, [x3,x1], [y3,y1], col); 
+                                        end
+                                    end
+                                end
+                            else 
+                                for n = 0:D:(D*k)
+                                    if ~isempty(sorted)
+                                        if sorted(1) <= n && n <= sorted(2)
+                                            crossed = crossed + 1;
+                                            sorted(1)=[];
+                                            sorted(1)=[];
+                                        end
+                                    end
+                                end
+                            end
+                        end 
+                    elseif app.ShapeDropDown.Value=="Square"
+                        for i = 1:1:numTests   
+                            x1 = point(i,1);
+                            y1 = point(i,2);
+                            x2 = x1 + L*cos(angs(i));
+                            y2 = y1 + L*sin(angs(i));
+                            x3 = x2 - L*sin(angs(i));
+                            y3 = y2 + L*cos(angs(i));
+                            x4 = x3 - L*cos(angs(i));
+                            y4 = y3 - L*sin(angs(i));
+                            xsort = [x1, x2, x3, x4];
+                            sorted = sort(xsort);
+                            sorted(2)=[];
+                            sorted(2)=[];
+                            if i <=750
+                                for n = 0:D:(D*k)
+                                    if ~isempty(sorted)
+                                        if sorted(1) <= n && n <= sorted(2)
+                                            plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                            plot(app.UIAxes, [x2,x3], [y2,y3], crossCol);
+                                            plot(app.UIAxes, [x3,x4], [y3,y4], crossCol);
+                                            plot(app.UIAxes, [x4,x1], [y4,y1], crossCol);  
+                                            crossed = crossed + 1;
+                                            sorted=[];
+                                        else
+                                            plot(app.UIAxes, [x1,x2], [y1,y2], col);
+                                            plot(app.UIAxes, [x2,x3], [y2,y3], col);
+                                            plot(app.UIAxes, [x3,x4], [y3,y4], col);
+                                            plot(app.UIAxes, [x4,x1], [y4,y1], col);  
+                                        end
+                                    end
+                                end
+                            else
+                                for n = 0:D:(D*k)
+                                    if ~isempty(sorted)
+                                        if sorted(1) <= n && n <= sorted(2)
+                                            crossed = crossed + 1;
+                                            sorted=[];
+                                        end
+                                    end
+                                end
+                            end
+                        end 
+                    elseif app.ShapeDropDown.Value=="Pentagon"
+                        for i = 1:1:numTests   
+                            x1 = point(i,1); %creates 5 coordinates as vertices for the shape
+                            y1 = point(i,2);
+                            x2 = x1 + L*cosd(108);
+                            y2 = y1 + L*sind(108);
+                            x3 = x2 - L*sind(108);
+                            y3 = y2 + L*cosd(108);
+                            x4 = x3 - L*cosd(108);
+                            y4 = y3 - L*sind(108);
+                            x5 = x4 + L*sind(108);
+                            y5 = y4 + L*cosd(108);
+                            xsort = [x1, x2, x3, x4, x5];
+                            sorted = sort(xsort); %used to calculate if there is a line between the leftmost and 
+                            sorted(2)=[];         %rightmost points
+                            sorted(2)=[];
+                            sorted(2)=[];
+                            if i <=750 %only plots the first 750 results
+                                for n = 0:D:(D*k)
+                                    if ~isempty(sorted)
+                                        if sorted(1) <= n && n <= sorted(2) % connects the vertices
+                                            plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                            plot(app.UIAxes, [x2,x3], [y2,y3], crossCol);
+                                            plot(app.UIAxes, [x3,x4], [y3,y4], crossCol);
+                                            plot(app.UIAxes, [x4,x5], [y4,y5], crossCol);
+                                            plot(app.UIAxes, [x5,x1], [y5,y1], crossCol);
+                                            crossed = crossed + 1;
+                                            sorted=[];
+                                        else
+                                            plot(app.UIAxes, [x1,x2], [y1,y2], col);
+                                            plot(app.UIAxes, [x2,x3], [y2,y3], col);
+                                            plot(app.UIAxes, [x3,x4], [y3,y4], col);
+                                            plot(app.UIAxes, [x4,x5], [y4,y5], col);  
+                                            plot(app.UIAxes, [x5,x1], [y5,y1], col);
+                                        end
+                                    end
+                                end
+                            else
+                                for n = 0:D:(D*k)
+                                    if ~isempty(sorted)
+                                        if sorted(1) <= n && n <= sorted(2)
+                                            crossed = crossed + 1;
+                                            sorted=[];
+                                        end
+                                    end
+                                end
+                            end
+                        end 
+                    end
+                    piEstimate = 2 * numTests / crossed;
+                    app.estimateLabel.Text = "pi estimate: " + (piEstimate);
+                else
+                    l1 = app.NeedleLengthSpinner.Value;
+                    l2 = app.NeedleLengthSpinner_2.Value;
+                    l3 = app.NeedleLengthSpinner_3.Value;
+                    lens = [l1,l2,l3];
+                    % D = width of each plank of wood 
+                    if max(lens) <= 2 * min(lens)
+                        D = 2*(min(lens)); 
+                    else
+                        D = max(lens);
+                    end
+                    k = app.numPlanks.Value;
+                    for n = 0:D:(D*k)
+                        xline(app.UIAxes, n); %creates the planks
+                    end
+                    angs = rand(numTests,1) * (2*pi); %generates an array of random angles
+                    point = D*k * rand(numTests,2) ; %generates an array of random points 
+                    for i = 1:1:numTests 
+                        needleLength = randsample(lens,1); 
+                        x1 = point(i,1); %creates the coordinates for the ends of the lines
+                        y1 = point(i,2);
+                        x2 = x1 + needleLength*cos(angs(i));
+                        y2 = y1 + needleLength*sin(angs(i));
+                        sortedx = sort([x1,x2]);
+                        for n = 0:D:(D*k)
+                            if i <=1000 %only plots the first 1000 needles
+                                if ~isempty(sortedx)
+                                    if sortedx(1) <= n && n <= sortedx(2)
+                                        plot(app.UIAxes, [x1,x2], [y1,y2], crossCol);
+                                        sortedx=[];
+                                        crossed = crossed + 1;
+                                    else
+                                        plot(app.UIAxes, [x1,x2], [y1,y2], col);
+                                    end
+                                end
+                            end
+                            if ~isempty(sortedx)
+                                if (sortedx(1) <= n && n <= sortedx(2))
+                                    sortedx=[];
+                                    crossed = crossed + 1;
+                                end
+                            end   
+                        end
+                    end
+                    piEstimate = (2*(mean(lens))/D)/(crossed/numTests);
+                    app.estimateLabel.Text = "pi estimate: " + (piEstimate); 
+                end
+            end    
+        end
+
+        % Menu selected function: EditDisplayMenu
+        function EditDisplayMenuSelected(app, event)
+            
+        end
+
+        % Menu selected function: reduce
+        function reduceMenuSelected(app, event)
+            app.estimateLabel.FontSize = app.estimateLabel.FontSize - 1;
+        end
+
+        % Menu selected function: increase
+        function increaseMenuSelected(app, event)
+            app.estimateLabel.FontSize = app.estimateLabel.FontSize + 1;
+        end
+
+        % Menu selected function: redMenu
+        function redMenuSelected(app, event)
+            app.estimateLabel.FontColor = "r";
+        end
+
+        % Menu selected function: blueMenu
+        function blueMenuSelected(app, event)
+            app.estimateLabel.FontColor = "b";
+        end
+
+        % Menu selected function: greenMenu
+        function greenMenuSelected(app, event)
+            app.estimateLabel.FontColor = "g";
+        end
+
+        % Menu selected function: yellowMenu
+        function yellowMenuSelected(app, event)
+            app.estimateLabel.FontColor = "y";
+        end
+
+        % Menu selected function: maroonMenu
+        function maroonMenuSelected(app, event)
+            app.estimateLabel.FontColor = "m";
+        end
+
+        % Menu selected function: blackMenu
+        function blackMenuSelected(app, event)
+            app.estimateLabel.FontColor = "k";
+        end
+
+        % Menu selected function: cyanMenu
+        function cyanMenuSelected(app, event)
+            app.estimateLabel.FontColor = "c";
+        end
+
+        % Value changed function: TaskDropDown
+        function valChanged(app, event)
+            if app.TaskDropDown.Value ~= "Task 5" 
+                app.ShapeDropDownLabel.Visible = false;
+                app.ShapeDropDown.Visible = false;
+                app.InfoHelpButton.Visible = false;
+                app.Task5OptionDropDown.Visible = false;
+                app.Task5OptionDropDownLabel.Visible = false;
+                app.NeedleLengthSpinner_2.Visible = false;
+                app.NeedleLengthSpinner_3.Visible = false;
+            else
+                app.InfoHelpButton.Visible = true;  
+                app.Task5OptionDropDown.Visible = true;
+                app.Task5OptionDropDownLabel.Visible = true;
+            end
+            if app.TaskDropDown.Value == "Task 3" || app.TaskDropDown.Value == "Task 4"
+                app.NumberofPlanksLabel.Text="Number of Floor Squares:";
+                app.xLabel.Visible=true;
+                app.numPlanks_2.Visible = true;
+            else 
+                app.NumberofPlanksLabel.Text="Number of Planks:";
+                app.xLabel.Visible=false;
+                app.numPlanks_2.Visible = false;
+            end
+        end
+
+        % Value changed function: InfoHelpButton
+        function InfoHelpButtonValueChanged(app, event)
+            if app.TextArea.Visible == false
+                app.TextArea.Visible = true;
+                app.InfoHelpButton.Text = "Close Info";
+            elseif app.TextArea.Visible == true
+                app.TextArea.Visible = false;
+                app.InfoHelpButton.Text = "Info/Help";
+            end
+                
+        end
+
+        % Menu selected function: SaveExperimentMenu
+        function SaveExperiment(app, event)
+            if app.TaskDropDown.Value == "Task 1"
+                fileName = "squares for pi";
+            elseif app.TaskDropDown.Value == "Task 2"
+                fileName = "squares for root 2";
+            elseif app.TaskDropDown.Value == "Task 3"
+                fileName = "needles for pi";
+            elseif app.TaskDropDown.Value == "Task 4"
+                fileName = "needles for pi";
+            elseif app.TaskDropDown.Value == "Task 5"
+                if app.ShapeDropDown.Value == "Triangle"
+                    fileName = "triangles for pi";
+                elseif app.ShapeDropDown.Value == "Square"
+                    fileName = "squares for pi";
+                elseif app.ShapeDropDown.Value == "Pentagon"
+                    fileName = "pentagons for pi";
+                end
+            end
+            fig = figure;
+            fig.Visible = 'off';
+            figAxes = axes(fig);
+            % Copy all UIAxes children, take over axes limits and aspect ratio.            
+            allChildren = app.UIAxes.XAxis.Parent.Children;
+            copyobj(allChildren, figAxes)
+            figAxes.XLim = app.UIAxes.XLim;
+            figAxes.YLim = app.UIAxes.YLim;
+            figAxes.ZLim = app.UIAxes.ZLim;
+            figAxes.DataAspectRatio = app.UIAxes.DataAspectRatio;
+            % Save as png and fig files.
+            
+            saveas(fig, fileName, 'png');
+            savefig(fig, fileName);
+            % Delete the temporary figure.
+            delete(fig);
+        end
+
+        % Callback function
+        function LoadSavedExperimentMenuSelected(app, event)
+            
+        end
+
+        % Value changed function: Task5OptionDropDown
+        function Task5OptionDropDownValueChanged(app, event)
+            if app.Task5OptionDropDown.Value == "Shapes"
+                app.ShapeDropDownLabel.Visible = true;
+                app.ShapeDropDown.Visible = true;
+                app.NeedleLengthSpinner_2.Visible = false;
+                app.NeedleLengthSpinner_3.Visible = false;
+            elseif app.Task5OptionDropDown.Value == "Different lengths"
+                app.NeedleLengthSpinner_2.Visible = true;
+                app.NeedleLengthSpinner_3.Visible = true;
+                app.ShapeDropDownLabel.Visible = false;
+                app.ShapeDropDown.Visible = false;
+            end
+        end
+
+        % Changes arrangement of the app based on UIFigure width
+        function updateAppLayout(app, event)
+            currentFigureWidth = app.UIFigure.Position(3);
+            if(currentFigureWidth <= app.onePanelWidth)
+                % Change to a 2x1 grid
+                app.GridLayout.RowHeight = {478, 478};
+                app.GridLayout.ColumnWidth = {'1x'};
+                app.RightPanel.Layout.Row = 2;
+                app.RightPanel.Layout.Column = 1;
+            else
+                % Change to a 1x2 grid
+                app.GridLayout.RowHeight = {'1x'};
+                app.GridLayout.ColumnWidth = {511, '1x'};
+                app.RightPanel.Layout.Row = 1;
+                app.RightPanel.Layout.Column = 2;
+            end
+        end
+    end
+
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create UIFigure and hide until all components are created
+            app.UIFigure = uifigure('Visible', 'off');
+            app.UIFigure.AutoResizeChildren = 'off';
+            app.UIFigure.Position = [100 100 813 478];
+            app.UIFigure.Name = 'MATLAB App';
+            app.UIFigure.SizeChangedFcn = createCallbackFcn(app, @updateAppLayout, true);
+
+            % Create GridLayout
+            app.GridLayout = uigridlayout(app.UIFigure);
+            app.GridLayout.ColumnWidth = {511, '1x'};
+            app.GridLayout.RowHeight = {'1x'};
+            app.GridLayout.ColumnSpacing = 0;
+            app.GridLayout.RowSpacing = 0;
+            app.GridLayout.Padding = [0 0 0 0];
+            app.GridLayout.Scrollable = 'on';
+
+            % Create LeftPanel
+            app.LeftPanel = uipanel(app.GridLayout);
+            app.LeftPanel.Layout.Row = 1;
+            app.LeftPanel.Layout.Column = 1;
+
+            % Create UIAxes
+            app.UIAxes = uiaxes(app.LeftPanel);
+            title(app.UIAxes, 'Buffon''s Needles')
+            xlabel(app.UIAxes, 'X')
+            ylabel(app.UIAxes, 'Y')
+            zlabel(app.UIAxes, 'Z')
+            app.UIAxes.PlotBoxAspectRatio = [1.19162995594714 1 1];
+            app.UIAxes.ButtonDownFcn = createCallbackFcn(app, @buffonax, true);
+            app.UIAxes.Tag = 'buffon_ax';
+            app.UIAxes.Position = [20 38 481 418];
+
+            % Create RightPanel
+            app.RightPanel = uipanel(app.GridLayout);
+            app.RightPanel.Layout.Row = 1;
+            app.RightPanel.Layout.Column = 2;
+
+            % Create NumberoftestsLabel
+            app.NumberoftestsLabel = uilabel(app.RightPanel);
+            app.NumberoftestsLabel.HorizontalAlignment = 'right';
+            app.NumberoftestsLabel.Position = [15 365 94 22];
+            app.NumberoftestsLabel.Text = 'Number of tests:';
+
+            % Create Numberoftests
+            app.Numberoftests = uieditfield(app.RightPanel, 'numeric');
+            app.Numberoftests.Limits = [1 1000000000];
+            app.Numberoftests.RoundFractionalValues = 'on';
+            app.Numberoftests.ValueChangedFcn = createCallbackFcn(app, @tests, true);
+            app.Numberoftests.Tag = 'tests';
+            app.Numberoftests.Position = [124 364 85 24];
+            app.Numberoftests.Value = 100;
+
+            % Create RunButton
+            app.RunButton = uibutton(app.RightPanel, 'push');
+            app.RunButton.ButtonPushedFcn = createCallbackFcn(app, @run, true);
+            app.RunButton.Position = [129 25 44 24];
+            app.RunButton.Text = 'Run';
+
+            % Create estimateLabel
+            app.estimateLabel = uilabel(app.RightPanel);
+            app.estimateLabel.Tag = 'estimate';
+            app.estimateLabel.Position = [32 61 239 22];
+            app.estimateLabel.Text = 'pi estimate: ';
+
+            % Create TaskDropDownLabel
+            app.TaskDropDownLabel = uilabel(app.RightPanel);
+            app.TaskDropDownLabel.HorizontalAlignment = 'right';
+            app.TaskDropDownLabel.Position = [27 418 33 22];
+            app.TaskDropDownLabel.Text = 'Task:';
+
+            % Create TaskDropDown
+            app.TaskDropDown = uidropdown(app.RightPanel);
+            app.TaskDropDown.Items = {'Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5'};
+            app.TaskDropDown.ValueChangedFcn = createCallbackFcn(app, @valChanged, true);
+            app.TaskDropDown.Position = [69 413 72 31];
+            app.TaskDropDown.Value = 'Task 1';
+
+            % Create NeedleColourDropDownLabel
+            app.NeedleColourDropDownLabel = uilabel(app.RightPanel);
+            app.NeedleColourDropDownLabel.HorizontalAlignment = 'right';
+            app.NeedleColourDropDownLabel.Position = [15 266 86 22];
+            app.NeedleColourDropDownLabel.Text = 'Needle Colour:';
+
+            % Create NeedleLengthLabel
+            app.NeedleLengthLabel = uilabel(app.RightPanel);
+            app.NeedleLengthLabel.HorizontalAlignment = 'right';
+            app.NeedleLengthLabel.Position = [15 329 87 22];
+            app.NeedleLengthLabel.Text = 'Needle Length:';
+
+            % Create NeedleLengthSpinner
+            app.NeedleLengthSpinner = uispinner(app.RightPanel);
+            app.NeedleLengthSpinner.Limits = [0 30];
+            app.NeedleLengthSpinner.Position = [119 333 54 15];
+            app.NeedleLengthSpinner.Value = 5;
+
+            % Create NeedleColourDropDown
+            app.NeedleColourDropDown = uidropdown(app.RightPanel);
+            app.NeedleColourDropDown.Items = {'red', 'blue', 'green', 'yellow'};
+            app.NeedleColourDropDown.Position = [116 264 78 26];
+            app.NeedleColourDropDown.Value = 'red';
+
+            % Create IntersectionColourDropDownLabel
+            app.IntersectionColourDropDownLabel = uilabel(app.RightPanel);
+            app.IntersectionColourDropDownLabel.HorizontalAlignment = 'right';
+            app.IntersectionColourDropDownLabel.Position = [16 228 110 22];
+            app.IntersectionColourDropDownLabel.Text = 'Intersection Colour:';
+
+            % Create IntersectionColourDropDown
+            app.IntersectionColourDropDown = uidropdown(app.RightPanel);
+            app.IntersectionColourDropDown.Items = {'maroon', 'black', 'cyan'};
+            app.IntersectionColourDropDown.Position = [141 226 78 26];
+            app.IntersectionColourDropDown.Value = 'maroon';
+
+            % Create ShapeDropDownLabel
+            app.ShapeDropDownLabel = uilabel(app.RightPanel);
+            app.ShapeDropDownLabel.HorizontalAlignment = 'right';
+            app.ShapeDropDownLabel.Visible = 'off';
+            app.ShapeDropDownLabel.Position = [16 155 43 22];
+            app.ShapeDropDownLabel.Text = 'Shape:';
+
+            % Create ShapeDropDown
+            app.ShapeDropDown = uidropdown(app.RightPanel);
+            app.ShapeDropDown.Items = {'Triangle', 'Square', 'Pentagon'};
+            app.ShapeDropDown.Visible = 'off';
+            app.ShapeDropDown.Position = [74 155 122 22];
+            app.ShapeDropDown.Value = 'Triangle';
+
+            % Create NumberofPlanksLabel
+            app.NumberofPlanksLabel = uilabel(app.RightPanel);
+            app.NumberofPlanksLabel.Position = [21 297 141 22];
+            app.NumberofPlanksLabel.Text = 'Number of Planks:';
+
+            % Create numPlanks
+            app.numPlanks = uispinner(app.RightPanel);
+            app.numPlanks.Limits = [0 60];
+            app.numPlanks.RoundFractionalValues = 'on';
+            app.numPlanks.Position = [161 301 60 15];
+            app.numPlanks.Value = 10;
+
+            % Create xLabel
+            app.xLabel = uilabel(app.RightPanel);
+            app.xLabel.HorizontalAlignment = 'right';
+            app.xLabel.Visible = 'off';
+            app.xLabel.Position = [223 297 14 22];
+            app.xLabel.Text = 'x';
+
+            % Create InfoHelpButton
+            app.InfoHelpButton = uibutton(app.RightPanel, 'state');
+            app.InfoHelpButton.ValueChangedFcn = createCallbackFcn(app, @InfoHelpButtonValueChanged, true);
+            app.InfoHelpButton.Visible = 'off';
+            app.InfoHelpButton.Text = 'Info/Help';
+            app.InfoHelpButton.Position = [222 443 74 22];
+
+            % Create Task5OptionDropDownLabel
+            app.Task5OptionDropDownLabel = uilabel(app.RightPanel);
+            app.Task5OptionDropDownLabel.HorizontalAlignment = 'right';
+            app.Task5OptionDropDownLabel.Visible = 'off';
+            app.Task5OptionDropDownLabel.Position = [20 196 85 16];
+            app.Task5OptionDropDownLabel.Text = 'Task 5 Option:';
+
+            % Create Task5OptionDropDown
+            app.Task5OptionDropDown = uidropdown(app.RightPanel);
+            app.Task5OptionDropDown.Items = {'Shapes', 'Different lengths'};
+            app.Task5OptionDropDown.ValueChangedFcn = createCallbackFcn(app, @Task5OptionDropDownValueChanged, true);
+            app.Task5OptionDropDown.Visible = 'off';
+            app.Task5OptionDropDown.Position = [113 193 144 23];
+            app.Task5OptionDropDown.Value = 'Shapes';
+
+            % Create NeedleLengthSpinner_2
+            app.NeedleLengthSpinner_2 = uispinner(app.RightPanel);
+            app.NeedleLengthSpinner_2.Limits = [0 30];
+            app.NeedleLengthSpinner_2.Visible = 'off';
+            app.NeedleLengthSpinner_2.Position = [183 333 54 15];
+            app.NeedleLengthSpinner_2.Value = 4;
+
+            % Create NeedleLengthSpinner_3
+            app.NeedleLengthSpinner_3 = uispinner(app.RightPanel);
+            app.NeedleLengthSpinner_3.Limits = [0 30];
+            app.NeedleLengthSpinner_3.Visible = 'off';
+            app.NeedleLengthSpinner_3.Position = [242 333 54 15];
+            app.NeedleLengthSpinner_3.Value = 3;
+
+            % Create TextArea
+            app.TextArea = uitextarea(app.RightPanel);
+            app.TextArea.Editable = 'off';
+            app.TextArea.Visible = 'off';
+            app.TextArea.Position = [7 82 288 323];
+            app.TextArea.Value = {'This is a simulation of the Buffon''s needles experiment. It has been modified in different ways in each task.'; ''; 'In task 1, it has been edited to drop squares, rather than needles, to calculate pi. In task 2, it uses these to calculate the square root of 2. '; ''; 'In task 3, it calculates pi - using needles not squares - but uses square tiles rather than planks.'; ''; 'Task 4 was slightly skipped, so runs task 3.'; ''; 'In task 5, you can either select a different shape - triangles, sqaures, or irregular pentagons - to calculate pi or you can use different sized needles. '; ''; 'Task 5 also allows the saving of the most recent experiment for any of the tasks.'; ''; 'You may adjust the number of needles dropped, their length, the number of planks, and the needle colours. '};
+
+            % Create numPlanks_2
+            app.numPlanks_2 = uispinner(app.RightPanel);
+            app.numPlanks_2.Limits = [0 60];
+            app.numPlanks_2.RoundFractionalValues = 'on';
+            app.numPlanks_2.Visible = 'off';
+            app.numPlanks_2.Position = [242 301 60 15];
+            app.numPlanks_2.Value = 10;
+
+            % Create EditDisplayMenu
+            app.EditDisplayMenu = uimenu(app.UIFigure);
+            app.EditDisplayMenu.MenuSelectedFcn = createCallbackFcn(app, @EditDisplayMenuSelected, true);
+            app.EditDisplayMenu.Text = 'Edit Display';
+
+            % Create FontSizeMenu
+            app.FontSizeMenu = uimenu(app.EditDisplayMenu);
+            app.FontSizeMenu.Text = 'Font Size';
+
+            % Create reduce
+            app.reduce = uimenu(app.FontSizeMenu);
+            app.reduce.MenuSelectedFcn = createCallbackFcn(app, @reduceMenuSelected, true);
+            app.reduce.Text = '-';
+
+            % Create increase
+            app.increase = uimenu(app.FontSizeMenu);
+            app.increase.MenuSelectedFcn = createCallbackFcn(app, @increaseMenuSelected, true);
+            app.increase.Text = '+';
+
+            % Create FontColourMenu
+            app.FontColourMenu = uimenu(app.EditDisplayMenu);
+            app.FontColourMenu.Text = 'Font Colour';
+
+            % Create redMenu
+            app.redMenu = uimenu(app.FontColourMenu);
+            app.redMenu.MenuSelectedFcn = createCallbackFcn(app, @redMenuSelected, true);
+            app.redMenu.Text = 'red';
+
+            % Create blueMenu
+            app.blueMenu = uimenu(app.FontColourMenu);
+            app.blueMenu.MenuSelectedFcn = createCallbackFcn(app, @blueMenuSelected, true);
+            app.blueMenu.Text = 'blue';
+
+            % Create greenMenu
+            app.greenMenu = uimenu(app.FontColourMenu);
+            app.greenMenu.MenuSelectedFcn = createCallbackFcn(app, @greenMenuSelected, true);
+            app.greenMenu.Text = 'green';
+
+            % Create yellowMenu
+            app.yellowMenu = uimenu(app.FontColourMenu);
+            app.yellowMenu.MenuSelectedFcn = createCallbackFcn(app, @yellowMenuSelected, true);
+            app.yellowMenu.Text = 'yellow';
+
+            % Create maroonMenu
+            app.maroonMenu = uimenu(app.FontColourMenu);
+            app.maroonMenu.MenuSelectedFcn = createCallbackFcn(app, @maroonMenuSelected, true);
+            app.maroonMenu.Text = 'maroon';
+
+            % Create blackMenu
+            app.blackMenu = uimenu(app.FontColourMenu);
+            app.blackMenu.MenuSelectedFcn = createCallbackFcn(app, @blackMenuSelected, true);
+            app.blackMenu.Text = 'black';
+
+            % Create cyanMenu
+            app.cyanMenu = uimenu(app.FontColourMenu);
+            app.cyanMenu.MenuSelectedFcn = createCallbackFcn(app, @cyanMenuSelected, true);
+            app.cyanMenu.Text = 'cyan';
+
+            % Create SaveExperimentMenu
+            app.SaveExperimentMenu = uimenu(app.UIFigure);
+            app.SaveExperimentMenu.MenuSelectedFcn = createCallbackFcn(app, @SaveExperiment, true);
+            app.SaveExperimentMenu.Text = 'Save Experiment';
+
+            % Show the figure after all components are created
+            app.UIFigure.Visible = 'on';
+        end
+    end
+
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = code_1922896
+
+            % Create UIFigure and components
+            createComponents(app)
+
+            % Register the app with App Designer
+            registerApp(app, app.UIFigure)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.UIFigure)
+        end
+    end
+end]]></w:t></w:r></w:p></w:body></w:document>
